@@ -1,0 +1,39 @@
+//------------------
+// Animat
+//------------------
+@import "prefixer";
+
+
+@mixin transition($value){
+	@include prefixer(transition, $value);
+}
+
+@mixin rotate($value) {
+	@include prefixer(transform, rotate($value));
+}
+
+@mixin scale3d($x, $y, $z){
+	@include prefixer(transform, scale3d($x, $y, $z));
+}
+
+@mixin translate3d($x, $y, $z){
+	@include prefixer(transform, translate3d($x, $y, $z));
+}
+
+
+// animation
+@mixin name($name){
+	@include prefixer(animation-name, $name);
+}
+
+@mixin duration($val){
+	@include prefixer(animation-duration, $val);
+}
+
+@mixin delay($val){
+	@include prefixer(animation-delay, $val);
+}
+
+@mixin fillmode($name){
+	@include prefixer(animation-fill-mode, $name);
+}

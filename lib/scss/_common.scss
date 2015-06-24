@@ -1,0 +1,10 @@
+//======================
+// Common
+//======================
+.fl{ float: left;}
+.fr{ float: right;}
+
+.mt18{ margin-top: toREM(18);}
+.clearfix{
+	@include clearfix;
+}

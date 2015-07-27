@@ -1,4 +1,4 @@
-#lib/scss 为sass库，欢迎修改。
+**lib/scss 为sass库，欢迎修改。**
 
 #sass学习
 

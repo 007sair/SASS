@@ -7,24 +7,20 @@
 @import "common.scss";
 @import "css3.scss";
 
-.hvcenter{
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	font-size: 18px;
-	@include boxCenter(center,center);
-	//@include opacity(0.5,false);
-}
 .test{
-	display: block;
-	width: 100px;
-	height: 100px;
-	zoom: 1;
-	@include rgba(#f00,0.9);
-	@include inline-block(middle,true);
-	@include prefixer(animation,(all 1s ease));
-	@include prefixer-value(display,flex);
-	@include shadow(5px,5px,10px,#f00);
+	height: 50px;
+	background: #ccc;
+	@include flexbox;
+	li{
+		$bg : #f00;		//基础背景色
+		$li : 5;		//li的个数
+		@include boxCenter;
+		@include flexboxKids;
+		color: #fff;
+		@for $i from 1 through $li {
+			&:nth-child(#{$i}){
+				background: darken($bg, 5% * $i);
+			}
+		}
+	}
 }

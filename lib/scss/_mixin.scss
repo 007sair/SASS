@@ -17,7 +17,6 @@
         overflow: hidden;
     }
 }
-
 %clearfix {
     @include clearfix;
 }
@@ -79,5 +78,19 @@
 		*vertical-align: auto;
 		*display: inline;
 		*zoom: 1;
+	}
+}
+
+// 最小宽、高
+@mixin minWH($type, $num){
+	@if ($type == width){
+		min-width: $num;
+		width: auto !important; 
+		_width: $num;
+	}
+	@if ($type == height){
+		min-height: $num;
+		height: auto !important; 
+		_height: $num;
 	}
 }

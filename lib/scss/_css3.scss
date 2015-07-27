@@ -73,8 +73,8 @@
         display: -webkit-box;
         -webkit-line-clamp: $line;
         -webkit-box-orient: vertical;
+        width: 100% - $substract;
     }
-    width: 100% - $substract;
     overflow: hidden;
 }
 
@@ -87,9 +87,11 @@
 	display: flex;                  // NEW, Spec - Opera 12.1, Firefox 20+ //新版本语法： Opera 12.1, Firefox 22+
 }
 
-// 元素垂直水平居中
-// @param  {[string]} $pack      [center] 水平对齐方向,[false] 水平方向不设置
-// @param  {[string]} $align      [align] 垂直对齐方向,[false] 垂直方向不设置
+
+
+//[boxCenter 元素垂直水平居中]
+//@param  {[type]} $pack:  center        [水平方向居中，false时表示不设置]
+//@param  {[type]} $align: center        [垂直方向居中，false时表示不设置]
 @mixin boxCenter($pack: center, $align: center){
 	@include flexbox;
 	@if($pack != false){
@@ -118,12 +120,12 @@
 
 
 //弹性布局子元素
-@mixin flexboxKids{
-	-webkit-box-flex: 1;            //OLD - iOS 6-, Safari 3.1-6
-	-moz-box-flex: 1;               //OLD - Firefox 19-
-	-webkit-flex: 1;                //Chrome
-	-ms-flex: 1;                    //IE 10
-	flex: 1;                        //NEW, Spec - Opera 12.1, Firefox 20+
+@mixin flexboxKids($num:1){
+	-webkit-box-flex: $num;            //OLD - iOS 6-, Safari 3.1-6
+	-moz-box-flex: $num;               //OLD - Firefox 19-
+	-webkit-flex: $num;                //Chrome
+	-ms-flex: $num;                    //IE 10
+	flex: $num;                        //NEW, Spec - Opera 12.1, Firefox 20+
 }
 
 // 控制文字行数溢出点点点

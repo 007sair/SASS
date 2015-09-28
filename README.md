@@ -1,5 +1,5 @@
 
-> sass库统一为：<a href="/007sair/007sair.github.io/tree/master/static/sass" target="_blank" title="">点击进入</a>
+> sass库统一为：<a href="https://github.com/007sair/007sair.github.io/tree/master/static/sass" title="点击进入">点击进入</a>
 
 ##一、变量
 

@@ -1,402 +1,783 @@
-**lib/scss 为sass库，欢迎修改。**
 
-#sass学习
+> sass库统一为：<a href="https://github.com/007sair/SASS/tree/master/lib/scss" target="_blank" title="">点击进入</a>
 
-> CSS 预处理器是一种语言用来为 CSS 增加一些编程的的特性，无需考虑浏览器的兼容性问题，例如你可以在 CSS 中使用变量、简单的程序逻辑、函数等等在编程语言中的一些基本技巧，可以让你的 CSS 更见简洁，适应性更强，代码更直观等诸多好处。
+##一、变量
 
-###文件名后缀
+####命名： `$`
 
-sass有两种后缀名文件：
+####规则：
 
-- `.sass` sass3.0前使用缩进，后缀名为sass，不使用大括号和分号；
-- `.scss` sass3.0后使用，sass为使编写更接近css而新使用的后缀。
+- 作用域：作用域同javascript，想调用局部变量可在值后使用 `!global` 
+- 默认值：变量没有设置具体值时，使用 `!default`
 
-```sass
-//.sass
-body
-  background: #eee
-  font-size:12px
-p
-  background: #0982c1
+<!-- more -->
 
-//.scss
+```scss
+//demo
+$primaryColor: #eeccff;
+$firstValue: 62.5%;
+$firstValue: 24px !default;
 body {
-  background: #eee;
-  font-size:12px;
+  $primaryColor: #ccc;
+  background: $primaryColor; //编译后#ccc
+  font-size: $firstValue; //编译后62.5%;
 }
-p{
-  background: #0982c1;
-} 
-```
-
-##变量
-
-变量以$开头，后面紧跟变量名，而变量值和变量名之间就需要使用冒号(:)分隔开（就像CSS属性设置一样），如：$color-gray:#999;
-
-###普通变量
-
-定义之后可以在全局范围内使用。
-
-```sass
-//sass style
-$fz12: 12px;
-body{
-    font-size: $fz12;
+p {
+  color: $primaryColor; //编译后#eeccff
 }
 ```
 
-###默认变量
+####插值：
 
-sass的默认变量仅需要在值后面加上!default即可。
+变量除了作为属性值使用，还能用在选择器或者属性名上：
 
-```sass
-//sass style
-$baseLineHeight: 1.5 !default;
-body{
-    line-height: $baseLineHeight; 
+```scss
+//scss
+$out: margin;
+$in: padding;
+.#{$out}-div{
+  #{$out}-top : 10px;
 }
-```
-sass的默认变量一般是用来设置默认值，然后根据需求来覆盖的，覆盖的方式也很简单，只需要在默认变量之前重新声明下变量即可
-
-```sass
-//sass style
-$baseLineHeight: 2;
-$baseLineHeight: 1.5 !default;
-body{
-    line-height: $baseLineHeight; 
+.#{$in}-div{
+  #{$in}-top : 10px;
 }
-```
-默认变量的价值在进行组件化开发的时候会非常有用。
 
-###特殊变量(插值)
-
-一般我们定义的变量都为属性值，可直接使用，但是如果变量作为属性或在某些特殊情况下等则必须要以#{$variables}形式使用。
-
-```sass
-//sass style
-$borderDirection: top !default; 
-$baseFontSize: 12px !default;
-$baseLineHeight: 1.5 !default;
-
-//应用于class和属性
-.border-#{$borderDirection}{
-  border-#{$borderDirection}: 1px solid #ccc;
+//css
+.margin-div {
+  margin-top: 10px;
 }
-//应用于复杂的属性值
-body{
-    font: #{$baseFontSize}/#{$baseLineHeight};
+.padding-div {
+  padding-top: 10px;
 }
+
 ```
 
-###多值变量
 
-多值变量分为list类型和map类型，简单来说list类型有点像js中的数组，而map类型有点像js中的对象。
+##二、引用
 
-####list
+####@import
 
-list数据可通过空格，逗号或小括号分隔多个值，可用`nth($var,$index)`取值。
-关于list数据操作还有很多其他函数如length($list)，join($list1,$list2,[$separator])，append($list,$value,[$separator])等，具体可参考sass Functions（搜索List Functions即可）
+语法格式如下：
 
-**定义：**
-
-```sass
-//一维数据
-$px: 5px 10px 20px 30px;
-
-//二维数据，相当于js中的二维数组
-$px: 5px 10px, 20px 30px;
-$px: (5px 10px) (20px 30px);
-```
-
-**使用：**
-
-```sass
-//sass style
-$linkColor: #08c #333 !default;//第一个值为默认值，第二个鼠标滑过值
-a{
-  color:nth($linkColor,1);
-  &:hover{
-    color:nth($linkColor,2);
-  }
-}
-```
-
-####map
-
-map数据以key和value成对出现，其中value又可以是list。
-格式为：$map: (key1: value1, key2: value2, key3: value3);。可通过map-get($map,$key)取值。
-关于map数据还有很多其他函数如map-merge($map1,$map2)，map-keys($map)，map-values($map)等，具体可参考sass Functions（搜索Map Functions即可）
-
-**定义：**
-
-```sass
-$heading: (h1: 2em, h2: 1.5em, h3: 1.2em);
-```
-
-**使用：**
-
-```sass
-//sass style
-$headings: (h1: 2em, h2: 1.5em, h3: 1.2em);
-@each $header, $size in $headings {
-  #{$header} {
-    font-size: $size;
-  }
-}
-```
-
-###全局变量
-
-在变量值后面加上 `!global` 即为全局变量。这个目前还用不上，不过将会在sass 3.4后的版本中正式应用。目前的sass变量范围饱受诟病，所以才有了这个全局变量。
-
-**目前变量机制**
-
-在选择器中声明的变量会覆盖外面全局声明的变量。(这也就人们常说的sass没有局部变量)
-
-```sass
-//sass style
-$fz12:      12px;
-body{
-    $fontSize: 14px;
-    font-size: $fz12;
-}
-p{
-    font-size:$fontSize;
-}
-```
-
-关于变量的详细分析请查阅：[sass揭秘之变量](http://www.w3cplus.com/preprocessor/sass-basic-variable.html)
-
-
-##嵌套
-
-sass可以进行选择器的嵌套，表示层级关系，看起来很优雅整齐。分选择器嵌套和属性嵌套
-
-**要点:**
-
-1. `&` 表示父元素选择器
-2. `@at-root` 用来跳出选择器嵌套，多个选择器跳出使用 `{}` 包裹起来
-3. `@at-root (without: ...)` 和 `@at-root (with: ...)`
-
-默认@at-root只会跳出选择器嵌套，而不能跳出@media或@support，如果要跳出这两种，则需使用@at-root (without: media)，@at-root (without: support)。这个语法的关键词有四个：all（表示所有），rule（表示常规css），media（表示media），support（表示support，因为@support目前还无法广泛使用，所以在此不表）。我们默认的@at-root其实就是@at-root (without:rule)。
-
-[DEMO](http://sassmeister.com/gist/e0e6263447899bfb565e)
-
-##导入
-
-**语法:**
-
-```sass
-@import "function.scss";
+```scss
 @import "reset.scss";
-@import "animate.scss";
+//or
+@import "reset";
 ```
 
-**要点:**
-
-1. 文件名命名：_reset.scss，若导入的sass文件不想被编译成css，可在文件名前添加下划线区分；
-2. 导入顺序，导入顺序觉得了文件互相依赖的关系；
-3. 与css的import导入规则区别。
-
-##注释
-
-1. `/*...*/` 同css注释，编译时会被一起编译到css中；
-2. `//...` 此注释不会被编译至css中。
+引用的scss文件会被自动编译成对应的css文件。如：`reset.scss`会被自动编译成 `reset.css`，解决这个问题可以给`reset.scss`文件名重命名为：`_reset.scss`。<br>
+当然，`import`的引用里不需要加`_`。
 
 
-##混合器
+##三、注释
 
-混合器的作用是将重复的css代码包装在一个容器内，类似于js中的function，包在混合器内的代码需要通过@include调用。<br>
-声明方式：@mixin  <br>
-参数：$，多个参数通过逗号隔开。 <br>
-参数默认值：$type: border-box，表示不传入参数时将使用此值。
+sass共有两种注释和一种特殊注释：
 
-**语法:**
+- `/*...*/` 这种注释会保留到编译后的css文件中；
+- `//...` 这种注释只保留在sass中，不会被编译至css。
+- `/*! ... */` 这种注释多了个感叹号，表示为_重要注释_，即使是压缩模式，也会保留这行注释，通常用于声明版权信息。
 
-```sass
-@mixin box-sizing ($type: border-box) {
-	-webkit-box-sizing:$type;     
-       -moz-box-sizing:$type;
-            box-sizing:$type;
+
+##四、嵌套
+
+####选择器嵌套
+
+```scss
+div{
+  h1{
+    color: #f00;
+  }
+}
+//或者：
+div h1{
+  color: #f00
 }
 ```
 
-**要点:**
+####属性嵌套
 
-1. 参数可有可无
+属性嵌套可以用在单属性和复合属性的嵌套中：
 
-###@content
+```scss
+//scss
+div{
+  border: { //注意border后面的冒号
+    color: #ccc;
+    style: solid;
+  }
+}
 
-**用法：**
+//css
+div {
+  border-color: #ccc;
+  border-style: solid;
+}
 
-```sass
-//sass style
-@mixin max-screen($res){
-  @media only screen and ( max-width: $res )
-  {
+```
+
+引用父选择器可以通过 `&` 符合实现：
+
+```scss
+//scss
+a.myAnchor {
+  color: blue;
+  &:hover {
+    text-decoration: underline;
+  }
+  &:visited {
+    color: purple;
+  }
+}
+
+//css
+a.myAnchor {
+  color: blue;
+}
+a.myAnchor:hover {
+  text-decoration: underline;
+}
+a.myAnchor:visited {
+  color: purple;
+}
+```
+离开嵌套回到顶层（根级）选择器，那么我们可以使用 `@at-root` 指令
+
+```scss
+//scss
+.first-component {
+  .text { font-size: 1.4rem; }
+  .button { font-size: 1.7rem; }
+  @at-root .second-component {
+    .text { font-size: 1.2rem; }
+    .button { font-size: 1.4rem; }
+  }
+}
+
+//css
+.first-component .text {
+  font-size: 1.4rem;
+}
+.first-component .button {
+  font-size: 1.7rem;
+}
+.second-component .text {
+  font-size: 1.2rem;
+}
+.second-component .button {
+  font-size: 1.4rem;
+}
+```
+
+> Inception Rule：选择器深度不要超过四层。——thesassway
+
+
+##五、继承
+
+####@extend
+
+使用`@extend`指令扩展input类，指向input-error类
+
+```scss
+//scss
+.input {
+  border-radius: 3px;
+  border: 4px solid #ddd;
+  color: #555;
+  font-size: 17px;
+  padding: 10px 20px;
+  display: inline-block;
+  outline: 0;
+}
+.error-input {
+  @extend .input;
+  border:4px solid #e74c3c;
+}
+```
+
+**请注意：**这么做并不会从`.input`复制样式到`.error-input`中。
+
+编译后如下：
+
+```css
+/*css*/
+.input, .error-input {
+  border-radius: 3px;
+  border: 4px solid #ddd;
+  color: #555;
+  font-size: 17px;
+  padding: 10px 20px;
+  display: inline-block;
+  outline: 0;
+}
+.error-input {
+  border: 4px solid #e74c3c;
+}
+body {
+  text-align: center;
+  padding-top: 100px;
+}
+```
+
+####占位选择器`%`
+
+从sass 3.2.0以后就可以定义占位选择器`%`。这种选择器的优势在于：如果不调用则不会有任何多余的css文件，避免了以前在一些基础的文件中预定义了很多基础的样式，然后实际应用中不管是否使用了`@extend`去继承相应的样式，都会解析出来所有的样式。占位选择器以`%`标识定义，通过`@extend`调用。
+
+```scss
+//scss
+%mod-input {
+  border-radius: 3px;
+  color: #555;
+  font-size: 17px;
+  padding: 10px 20px;
+  display: inline-block;
+  outline: 0;
+}
+.input {
+  @extend %mod-input;
+  border: 4px solid #ddd;
+}
+.input-error {
+  @extend %mod-input;
+  border:4px solid #e74c3c;
+}
+
+//css
+.input, .input-error {
+  border-radius: 3px;
+  color: #555;
+  font-size: 17px;
+  padding: 10px 20px;
+  display: inline-block;
+  outline: 0;
+}
+.input {
+  border: 4px solid #ddd;
+}
+.input-error {
+  border: 4px solid #e74c3c;
+}
+```
+
+
+##六、混合
+
+sass中使用`@mixin`声明混合，可以传递参数，参数名以`$`符号开始，多个参数以逗号分开，也可以给参数设置默认值。声明的`@mixin`通过`@include`来调用。
+
+####无参数mixin
+
+```scss
+//scss
+@mixin center-block {
+    margin-left:auto;
+    margin-right:auto;
+}
+.demo{
+    @include center-block;
+}
+
+//css
+.demo{
+    margin-left:auto;
+    margin-right:auto;
+}
+```
+
+####有参数mixin
+
+```scss
+//scss
+@mixin opacity($opacity:50) {
+  opacity: $opacity / 100;
+  filter: alpha(opacity=$opacity);
+}
+
+//css
+.opacity{
+  @include opacity; //参数使用默认值
+}
+.opacity-80{
+  @include opacity(80); //传递参数
+}
+```
+
+####多个参数mixin
+
+调用时可直接传入值，如`@include`传入参数的个数小于`@mixin`定义参数的个数，则按照顺序表示，后面不足的使用默认值，如不足的没有默认值则报错。除此之外还可以选择性的传入参数，使用参数名与值同时传入。
+
+```scss
+//scss
+@mixin horizontal-line($border:1px dashed #ccc, $padding:10px){
+    border-bottom:$border;
+    padding-top:$padding;
+    padding-bottom:$padding;  
+}
+.imgtext-h li{
+    @include horizontal-line(1px solid #ccc);
+}
+.imgtext-h--product li{
+    @include horizontal-line($padding:15px);
+}
+
+//css
+.imgtext-h li {
+    border-bottom: 1px solid #cccccc;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.imgtext-h--product li {
+    border-bottom: 1px dashed #cccccc;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+```
+
+####多组值参数mixin
+
+如果一个参数可以有多组值，如`box-shadow`、`transition`等，那么参数则需要在变量后加三个点表示，如`$variables...`。
+
+```scss
+//scss
+//box-shadow可以有多组值，所以在变量参数后面添加...
+@mixin box-shadow($shadow...) {
+  -webkit-box-shadow:$shadow;
+  box-shadow:$shadow;
+}
+.box{
+  border:1px solid #ccc;
+  @include box-shadow(0 2px 2px rgba(0,0,0,.3),0 3px 3px rgba(0,0,0,.3),0 4px 4px rgba(0,0,0,.3));
+}
+
+//css
+.box{
+  border:1px solid #ccc;
+  -webkit-box-shadow:0 2px 2px rgba(0,0,0,.3),0 3px 3px rgba(0,0,0,.3),0 4px 4px rgba(0,0,0,.3);
+  box-shadow:0 2px 2px rgba(0,0,0,.3),0 3px 3px rgba(0,0,0,.3),0 4px 4px rgba(0,0,0,.3);
+}
+```
+
+####@content
+
+`@content`在sass3.2.0中引入，可以用来解决css3的`@media`等带来的问题。它可以使`@mixin`接受一整块样式，接受的样式从`@content`开始。
+
+```scss
+@mixin media($queryString){
+  //...
+}
+```
+
+注意我们在混合宏media中声明了一个$queryString参数。当我们引入混合宏时，可以一个字符串参数以实现动态渲染。
+
+```scss
+@mixin media($queryString){
+  @media #{$queryString} {
     @content;
   }
 }
-@include max-screen(480px) {
-  body { color: red }
-}
-
-//css style
-@media only screen and (max-width: 480px) {
-  body { color: red }
-}                     
 ```
 
-> @mixin通过@include调用后解析出来的样式是以拷贝形式存在的，而下面的继承则是以联合声明的方式存在的，所以从3.2.0版本以后，建议传递参数的用@mixin，而非传递参数类的使用下面的继承%。
+因为我们期待字符串参数被目标函数使用，所以使用了Sass的插值语法，#{}。当你传递变量到这个括号中时，变量会像字符串一样输出而不是进行某种逻辑运算。
+这个例子中另一个生疏的地方是@content指令。当你使用的混合宏后接被大括号包裹的样式，那么被包裹样式就可以通过@content指令加以使用。
 
+```scss
+//scss
+@mixin media($queryString){
+  @media #{$queryString} {
+    @content;
+  }
+}
+.container {
+  width: 900px;
+  @include media("(max-width: 767px)"){
+    width: 100%;
+  }
+}
 
-##继承
-
-sass中，选择器继承可以让选择器继承另一个选择器的所有样式，并联合声明。使用选择器的继承，要使用关键词@extend，后面紧跟需要继承的选择器。
-
-**语法:**
-
-```sass
-.success {
-	@extend .message;
-	border-color: green;
+//css
+.container {
+  width: 900px;
+}
+@media (max-width: 767px) {
+  .container {
+    width: 100%;
+  }
 }
 ```
 
-**要点:**
+使用`@content`的好处：在需要Media Queries的地方，可以快速插入，而不需要在专门的区域重新定义。
 
-1. 继承方式为向上继承，抽取公共部分的css。
-
-###占位选择器 %
-
-从sass 3.2.0以后就可以定义占位选择器%。这种选择器的优势在于：如果不调用则不会有任何多余的css文件，避免了以前在一些基础的文件中预定义了很多基础的样式，然后实际应用中不管是否使用了@extend去继承相应的样式，都会解析出来所有的样式。占位选择器以%标识定义，通过@extend调用。
-
-> 在@media中暂时不能@extend @media外的代码片段，以后将会可以。
+> __PS：__ `@mixin`通过`@include`调用后解析出来的样式是以拷贝形式存在的，而下面的继承则是以联合声明的方式存在的，所以从3.2.0版本以后，建议传递参数的用`@mixin`，而非传递参数类的使用下面的继承`%`。
 
 
-##运算
+##七、函数
 
-##数据类型
+官方列表：<a href="http://sass-lang.com/documentation/Sass/Script/Functions.html" target="_blank" title="函数列表">sass function</a>
 
-SassScript 支持六种不同的数据类型：
+在Sass中，函数指令类似于混合宏，sass默认已有很多函数，定义函数的方式以`@function`它们会通过`@return`指令返回值而不是返回样式。这可以降低代码中的重复率并提高可读性。
 
-- 数字，1, 2, 13, 10px；
-- 字符串，有引号字符串或无引号字符串，"foo", 'bar', baz；
-- 颜色，blue, #04a3f9, rgba(255,0,0,0.5)；
-- 布尔型，true, false；
-- 空值，null；
-- 值列表，用空格或者逗号分开，1.5em 1em 0 2em, Helvetica, Arial, sans-serif。
+```scss
+//scss
+$baseFontSize:      10px !default;
+$gray:              #ccc !default;        
 
-> SassScript 也支持其他 CSS 属性值（property value），比如 Unicode 范围，或 !important声明。然而，Sass 不会特殊对待这些属性值，一律视为无引号字符串 (unquoted strings)。
+// pixels to rems 
+@function pxToRem($px) {
+  @return $px / $baseFontSize * 1rem;
+}
+
+body{
+  font-size:$baseFontSize;
+  color:lighten($gray,10%);
+}
+.test{
+  font-size:pxToRem(16px);
+  color:darken($gray,10%);
+}
+
+//css
+body {
+  font-size: 10px;
+  color: #e6e6e6;
+}
+
+.test {
+  font-size: 1.6rem;
+  color: #b3b3b3;
+}
+
+```
+
+**<a rel="nofollow" href="http://sassmeister.com/gist/0a041d0fb2d72758c280" target="_blank" title="">演示demo</a>**
+
+关于`@mixin`、`%`、`@function`更多可参考：
+
+- <a rel="nofollow" href="http://www.w3cplus.com/preprocessor/sass-mixins-function-placeholder.html">sass揭秘之@mixin，%，@function</a>
+- <a rel="nofollow" href="http://www.w3cplus.com/preprocessor/sass-color-function.html">Sass基础——颜色函数</a>
+- <a rel="nofollow" href="http://www.w3cplus.com/preprocessor/sass-other-function.html">Sass基础——Sass函数</a>
 
 
-##函数
+##八、运算
 
-`@function` 
+sass可以使用各种算式进行值的计算：
 
-关于@mixin，%，@function更多说明可参阅：<br>
-[sass揭秘之@mixin，%，@function](http://www.w3cplus.com/preprocessor/sass-mixins-function-placeholder.html) <br>
-[Sass基础——颜色函数](http://www.w3cplus.com/preprocessor/sass-color-function.html) <br>
-[Sass基础——Sass函数](http://www.w3cplus.com/preprocessor/sass-other-function.html) <br>
-[sass函数](http://sass-lang.com/documentation/Sass/Script/Functions.html)
+```scss
+//scss
+$num : 2;
+body {
+  margin: (14px/2);
+  top: 50px + 100px;
+  right: $num * 10%;
+}
+
+//css
+body {
+  margin: 7px;
+  top: 150px;
+  right: 20%;
+}
+```
+
+####加法：
+
+加法运算不仅仅是数字计算，也可以像js一样连接字符串。
+
+```scss
+//scss
+p{
+  text-decoration: line + -through;
+}
+
+//css
+p {
+  text-decoration: line-through;
+}
+```
+
+加法连接字符串也有一定的规则：如果前面字符串带有引号，后面字符串会自动包含在引号中，如果前面没有，后面带有引号的字符串也会去掉引号：
+
+```scss
+//scss
+p:before {
+  content: "Foo " + Bar;
+  font-family: sans- + "serif";
+}
+
+//css
+p:before {
+  content: "Foo Bar";
+  font-family: sans-serif;
+}
+```
+
+运算时会以空格作为分割，会操作相邻的两个数值，如：
+
+```scss
+//scss
+p {
+  margin: 3px + 4px auto;
+}
+
+//css
+p {
+  margin: 7px auto;
+}
+```
+
+插值运算`#{}`在字符串中的使用：
+
+```scss
+//scss
+$w  : 10;
+p:before {
+  content: "I ate #{5 + $w} pies!";
+}
+
+//css
+p:before {
+  content: "I ate 15 pies!";
+}
+```
+
+####除法：
+
+除法也有很多需要注意的地方，因为除法的运算符 `/` 在 CSS 中也有遇到，例如 font 缩写属性时候的 font-size 和 line-height 属性，就需要 `/` 来分割。所以，在这些包含 `/` 的 CSS 属性中对应位置的值，是不会参与运算的，除了下面情况下：
+
+- 如果两个值其中一个或两个存放在变量中或者是由函数返回的值； // $num / 2  or  rem(40) / 2
+- 如果值被包裹在一对括号里面； // (12px/2)
+- 如果值被作为另一个表达式的一部分。  // 10px + 15px/2
+
+```scss
+//scss
+p {
+  font: 10px/8px;             // 纯 CSS 不会运算
+  $width: 1000px;
+  width: $width/2;            // 使用变量，执行运算
+  width: round(1.5)/2;        // 使用函数返回值，执行运算
+  height: (500px/2);          // 使用括号包裹，执行运算
+  margin-left: 5px + 8px/2px; // 用了加法，作为表达式的一部分，执行运算
+}
+
+//css
+p {
+  font: 10px/8px;
+  width: 500px;
+  width: 1;
+  height: 250px;
+  margin-left: 9px;
+}
+```
 
 
-##条件判断及循环
+**注意事项：**
 
-###@if判断
+1.运算符的两边最好保留空格。
 
-@if可一个条件单独使用，也可以和@else结合多条件使用
+```scss
+//scss
+$w : 7px;
+$h : 10px;
+p:before {
+  width: $h-$w; // 报错：Undefined variable: "$h-".
+}
+```
 
-```sass
-//sass style
-$lte7: true;
-$type: monster;
-.ib{
-    display:inline-block;
-    @if $lte7 {
-        *display:inline;
-        *zoom:1;
+2.运算单位不要混合使用。
+
+```scss
+$num : 10px;
+div{
+  margin: $num * 20%; //报错：200%*px isn't a valid CSS value.
+}
+```
+
+**总的运算规则如下：**
+
+ - 加法：都没有单位输出纯数字；一方有单位，则结果输出该单位；两方相同单位，结果输出该单位；双方单位不同，报错。
+ - 减法：类似加法。
+ - 除法：两方相同单位，结果无单位；都没有单位，结果无单位；一方有单位另一方无单位，报错。
+ - 乘法：两方相同单位，报错；一方有单位，结果输出该单位；两方都无单位，输出无单位。
+
+
+##九、控制语句
+
+####@if
+
+`@if`作为判断语句，除了判断真假，还能判断或（`or`）、非（`not`）、与（`and`）、等于（`==`）、不等于（`!=`）
+
+```scss
+//inline-block
+@mixin inline-block($lte7:true) {
+  display: inline-block;
+  @if $lte7 { 
+    *display: inline;*zoom:1;
+  }
+}
+.div1{
+  @include inline-block();
+}
+.div2{
+  @include inline-block(false);
+}
+
+//css
+.div1 {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+.div2 {
+  display: inline-block;
+}
+```
+
+**三目运算：**
+
+语法为：`if($condition, $if_true, $if_false)`，三个参数分别表示：条件，条件为真的值，条件为假的值。
+
+```scss
+//scss
+$fontBold: true;
+.title {
+  font-weight: if($fontBold, bold, normal);
+}
+
+//css
+.title {
+  font-weight: bold;
+}
+```
+
+
+####@for
+
+语法：`@for $i from start through end` 或 `@for $i from start to end`，`$i`表示要循环的变量，`start`为起始值，`end`为结束值。<br>
+唯一区别为`through`表示包含结束值，`to`则表示不包含结束值。
+
+```scss
+//scss
+@for $i from 1 through 5 {
+  .div#{$i}{
+    background: url(images/bg#{$i}.jpg);
+  }
+}
+
+//css
+.div1 {
+  background: url(images/bg1.jpg);
+}
+.div2 {
+  background: url(images/bg2.jpg);
+}
+.div3 {
+  background: url(images/bg3.jpg);
+}
+.div4 {
+  background: url(images/bg4.jpg);
+}
+.div5 {
+  background: url(images/bg5.jpg);
+}
+```
+
+`@for`语句有两种：
+
+- @for $i from 1 through 5，through表示包含5
+- @for $i from 1 to 5，  to则反之
+
+####@each
+
+语法：`@each $i in a, b, c`，具体实现看如下demo：
+
+```scss
+//scss
+$icons : tag, name, cut, tel, num;
+@each $i in $icons{ //或者： @each $i in tag, name, cut, tel, num{}
+  .icon-#{$i}{
+    background-img: url(images/icon-#{$i}.png);
+  }
+}
+
+//css
+.icon-tag {
+  background-img: url(images/icon-tag.png);
+}
+.icon-name {
+  background-img: url(images/icon-name.png);
+}
+.icon-cut {
+  background-img: url(images/icon-cut.png);
+}
+.icon-tel {
+  background-img: url(images/icon-tel.png);
+}
+.icon-num {
+  background-img: url(images/icon-num.png);
+}
+```
+
+一个经典循环 css sprite 的做法：
+
+```scss
+//scss
+$sprite: puma sea-slug egret salamander !default;
+
+%sprite-animal{
+  background: url('/images/animal.png') no-repeat;
+}
+@each $animal in $sprite {
+    .#{$animal}-icon {
+        @extend %sprite-animal;     
+        background-position:0 -(index($sprite,$animal)*30px);
     }
 }
-p {
-  @if $type == ocean {
-    color: blue;
-  } @else if $type == matador {
-    color: red;
-  } @else if $type == monster {
-    color: green;
-  } @else {
-    color: black;
-  }
+
+//css
+.puma-icon, .sea-slug-icon, .egret-icon, .salamander-icon {
+  background: url("/images/animal.png") no-repeat;
+}
+.puma-icon {
+  background-position: -30px;
+}
+.sea-slug-icon {
+  background-position: -60px;
+}
+.egret-icon {
+  background-position: -90px;
+}
+.salamander-icon {
+  background-position: -120px;
 }
 ```
 
-###三目判断
+####@while
 
-语法为：if($condition, $if_true, $if_false) 。三个参数分别表示：条件，条件为真的值，条件为假的值。
+`@while`和`@for`循环非常相似，不过`@while`可以控制循环步数。
 
-```sass
-if(true, 1px, 2px) => 1px
-if(false, 1px, 2px) => 2px
-```
-
-###for循环
-
-for循环有两种形式，分别为：`@for $var from <start> through <end>` 和 `@for $var from <start> to <end>`。$i表示变量，start表示起始值，end表示结束值，这两个的区别是关键字through表示包括end这个数，而to则不包括end这个数。
-
-```sass
-//sass style
-@for $i from 1 through 3 {
+```scss
+//scss
+$i: 6;
+@while $i > 0 {
   .item-#{$i} { width: 2em * $i; }
+  $i: $i - 2;
+}
+
+//css
+.item-6 {
+  width: 12em;
+}
+.item-4 {
+  width: 8em;
+}
+.item-2 {
+  width: 4em;
 }
 ```
 
-###@each循环
+<br>
 
-语法为：`@each $var in <list or map>`。其中$var表示变量，而list和map表示list类型数据和map类型数据。sass 3.3.0新加入了多字段循环和map数据循环。
+####sass相关工具推荐
 
-**单个字段list数据循环**
-
-```sass
-//sass style
-$animal-list: puma, sea-slug, egret, salamander;
-@each $animal in $animal-list {
-  .#{$animal}-icon {
-    background-image: url('/images/#{$animal}.png');
-  }
-}
-
-```
-
-**多个字段list数据循环**
-
-```sass
-//sass style
-$animal-data: (puma, black, default),(sea-slug, blue, pointer),(egret, white, move);
-@each $animal, $color, $cursor in $animal-data {
-  .#{$animal}-icon {
-    background-image: url('/images/#{$animal}.png');
-    border: 2px solid $color;
-    cursor: $cursor;
-  }
-}
-```
-
-**多个字段map数据循环**
-
-```sass
-//sass style
-$headings: (h1: 2em, h2: 1.5em, h3: 1.2em);
-@each $header, $size in $headings {
-  #{$header} {
-    font-size: $size;
-  }
-}
-```
-
-关于循环判断详细分析请查阅：[sass揭秘之@if，@for，@each](http://www.w3cplus.com/preprocessor/sass-advanced-application.html)
-
-
+- <a rel="nofollow" href="http://sassmeister.com/" target="_blank">sass在线编译</a>
+- <a rel="nofollow" href="http://koala-app.com/index-zh.html" target="_blank">sass可视化编译工具: Koala</a>
 
 
 

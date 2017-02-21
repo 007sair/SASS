@@ -1,7 +1,7 @@
-sass库传送门：<a href="https://github.com/007sair/hero/tree/master/src/css/base" target="_blank" title="点击进入">点击进入</a>
-
 sass学习
 =========
+
+> [sass库传送门](https://github.com/007sair/hero/tree/master/src/css/base)
 
 ##一、变量
 

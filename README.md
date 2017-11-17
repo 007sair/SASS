@@ -1,13 +1,12 @@
-sass学习
-=========
+# sass学习
 
 > [sass库传送门](https://github.com/007sair/hero/tree/master/src/css/base)
 
-##一、变量
+## 一、变量
 
-####命名： `$`
+#### 命名： `$`
 
-####规则：
+#### 规则：
 
 - 作用域：作用域同javascript，想调用局部变量可在值后使用 `!global` 
 - 默认值：变量没有设置具体值时，使用 `!default`
@@ -29,7 +28,7 @@ p {
 }
 ```
 
-####插值：
+#### 插值：
 
 变量除了作为属性值使用，还能用在选择器或者属性名上：
 
@@ -46,18 +45,18 @@ $in: padding;
 
 //css
 .margin-div {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 .padding-div {
-  padding-top: 10px;
+    padding-top: 10px;
 }
 
 ```
 
 
-##二、引用
+## 二、引用
 
-####@import
+#### @import
 
 语法格式如下：
 
@@ -71,7 +70,7 @@ $in: padding;
 当然，`import`的引用里不需要加`_`。
 
 
-##三、注释
+## 三、注释
 
 sass共有两种注释和一种特殊注释：
 
@@ -80,9 +79,9 @@ sass共有两种注释和一种特殊注释：
 - `/*! ... */` 这种注释多了个感叹号，表示为_重要注释_，即使是压缩模式，也会保留这行注释，通常用于声明版权信息。
 
 
-##四、嵌套
+## 四、嵌套
 
-####选择器嵌套
+#### 选择器嵌套
 
 ```scss
 div{
@@ -96,7 +95,7 @@ div h1{
 }
 ```
 
-####属性嵌套
+#### 属性嵌套
 
 属性嵌套可以用在单属性和复合属性的嵌套中：
 
@@ -173,9 +172,9 @@ a.myAnchor:visited {
 > Inception Rule：选择器深度不要超过四层。——thesassway
 
 
-##五、继承
+## 五、继承
 
-####@extend
+#### @extend
 
 使用`@extend`指令扩展input类，指向input-error类
 
@@ -220,7 +219,7 @@ body {
 }
 ```
 
-####占位选择器`%`
+#### 占位选择器`%`
 
 从sass 3.2.0以后就可以定义占位选择器`%`。这种选择器的优势在于：如果不调用则不会有任何多余的css文件，避免了以前在一些基础的文件中预定义了很多基础的样式，然后实际应用中不管是否使用了`@extend`去继承相应的样式，都会解析出来所有的样式。占位选择器以`%`标识定义，通过`@extend`调用。
 
@@ -261,11 +260,11 @@ body {
 ```
 
 
-##六、混合
+## 六、混合
 
 sass中使用`@mixin`声明混合，可以传递参数，参数名以`$`符号开始，多个参数以逗号分开，也可以给参数设置默认值。声明的`@mixin`通过`@include`来调用。
 
-####无参数mixin
+#### 无参数mixin
 
 ```scss
 //scss
@@ -284,7 +283,7 @@ sass中使用`@mixin`声明混合，可以传递参数，参数名以`$`符号�
 }
 ```
 
-####有参数mixin
+#### 有参数mixin
 
 ```scss
 //scss
@@ -302,7 +301,7 @@ sass中使用`@mixin`声明混合，可以传递参数，参数名以`$`符号�
 }
 ```
 
-####多个参数mixin
+#### 多个参数mixin
 
 调用时可直接传入值，如`@include`传入参数的个数小于`@mixin`定义参数的个数，则按照顺序表示，后面不足的使用默认值，如不足的没有默认值则报错。除此之外还可以选择性的传入参数，使用参数名与值同时传入。
 
@@ -333,7 +332,7 @@ sass中使用`@mixin`声明混合，可以传递参数，参数名以`$`符号�
 }
 ```
 
-####多组值参数mixin
+#### 多组值参数mixin
 
 如果一个参数可以有多组值，如`box-shadow`、`transition`等，那么参数则需要在变量后加三个点表示，如`$variables...`。
 
@@ -357,7 +356,7 @@ sass中使用`@mixin`声明混合，可以传递参数，参数名以`$`符号�
 }
 ```
 
-####@content
+#### @content
 
 `@content`在sass3.2.0中引入，可以用来解决css3的`@media`等带来的问题。它可以使`@mixin`接受一整块样式，接受的样式从`@content`开始。
 
@@ -410,7 +409,7 @@ sass中使用`@mixin`声明混合，可以传递参数，参数名以`$`符号�
 > __PS：__ `@mixin`通过`@include`调用后解析出来的样式是以拷贝形式存在的，而下面的继承则是以联合声明的方式存在的，所以从3.2.0版本以后，建议传递参数的用`@mixin`，而非传递参数类的使用下面的继承`%`。
 
 
-##七、函数
+## 七、函数
 
 官方列表：<a href="http://sass-lang.com/documentation/Sass/Script/Functions.html" target="_blank" title="函数列表">sass function</a>
 
@@ -457,7 +456,7 @@ body {
 - <a rel="nofollow" href="http://www.w3cplus.com/preprocessor/sass-other-function.html">Sass基础——Sass函数</a>
 
 
-##八、运算
+## 八、运算
 
 sass可以使用各种算式进行值的计算：
 
@@ -478,7 +477,7 @@ body {
 }
 ```
 
-####加法：
+#### 加法：
 
 加法运算不仅仅是数字计算，也可以像js一样连接字符串。
 
@@ -539,7 +538,7 @@ p:before {
 }
 ```
 
-####除法：
+#### 除法：
 
 除法也有很多需要注意的地方，因为除法的运算符 `/` 在 CSS 中也有遇到，例如 font 缩写属性时候的 font-size 和 line-height 属性，就需要 `/` 来分割。所以，在这些包含 `/` 的 CSS 属性中对应位置的值，是不会参与运算的，除了下面情况下：
 
@@ -599,9 +598,9 @@ div{
  - 乘法：两方相同单位，报错；一方有单位，结果输出该单位；两方都无单位，输出无单位。
 
 
-##九、控制语句
+## 九、控制语句
 
-####@if
+#### @if
 
 `@if`作为判断语句，除了判断真假，还能判断或（`or`）、非（`not`）、与（`and`）、等于（`==`）、不等于（`!=`）
 
@@ -649,7 +648,7 @@ $fontBold: true;
 ```
 
 
-####@for
+#### @for
 
 语法：`@for $i from start through end` 或 `@for $i from start to end`，`$i`表示要循环的变量，`start`为起始值，`end`为结束值。<br>
 唯一区别为`through`表示包含结束值，`to`则表示不包含结束值。
@@ -685,7 +684,7 @@ $fontBold: true;
 - @for $i from 1 through 5，through表示包含5
 - @for $i from 1 to 5，  to则反之
 
-####@each
+#### @each
 
 语法：`@each $i in a, b, c`，具体实现看如下demo：
 
@@ -750,7 +749,7 @@ $sprite: puma sea-slug egret salamander !default;
 }
 ```
 
-####@while
+#### @while
 
 `@while`和`@for`循环非常相似，不过`@while`可以控制循环步数。
 
@@ -776,31 +775,7 @@ $i: 6;
 
 <br>
 
-####sass相关工具推荐
+#### sass相关工具推荐
 
 - <a rel="nofollow" href="http://sassmeister.com/" target="_blank">sass在线编译</a>
 - <a rel="nofollow" href="http://koala-app.com/index-zh.html" target="_blank">sass可视化编译工具: Koala</a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
